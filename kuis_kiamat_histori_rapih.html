@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Kuis PAI - Hari Kiamat</title>
+<meta charset="utf-8"/>
+<style>
+  .option-button {
+    padding: 12px 20px;
+    font-size: 18px;
+    margin: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  .option-button:hover {
+    background-color: #f0f0f0;
+  }
+
+    body {
+      background-color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .hidden { display: none; }
+    .question-container { margin-top: 30px; }
+    .question-title { font-size: 1.3em; font-weight: bold; }
+    .timer { font-size: 1.2em; color: red; margin-top: 10px; }
+    #historyTable {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+    #historyTable th, #historyTable td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+  </style>
+<style>
+.choices label {
+  display: block;
+  padding: 10px;
+  margin: 5px 0;
+  background: #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  transition: background 0.2s ease;
+}
+.choices label:hover {
+  background: #e0e0e0;
+}
+.choices input[type="radio"] {
+  margin-right: 10px;
+}
+</style></head>
+<body>
+<h1 style="font-size: 24px;">SELAMAT DATANG DI WEBSITE PILIHAN GANDA PAI KELAS 12</h1>
+<p>SELAMAT MENGERJAKAN, JAWAB SOAL DENGAN JUJUR TANPA MELIHAT GOOGLE</p>
+<div id="startScreen">
+<label>Masukkan Nama Anda:</label><br/>
+<input id="nama" required="" type="text"/>
+<br/><br/>
+<button onclick="mulaiKuis()">Mulai</button>
+</div>
+<div class="hidden" id="quizScreen">
+<h2 id="welcome"></h2>
+<div class="timer">Waktu tersisa: <span id="timer">20</span> detik</div>
+<div class="question-container" id="questionContainer"></div>
+<button onclick="jawab()">Jawab</button>
+</div>
+<div class="hidden" id="resultScreen">
+<h2>Hasil Kuis</h2>
+<p id="score"></p>
+<h3>Riwayat Poin:</h3>
+<table id="historyTable">
+<thead>
+<tr><th>Nama</th><th>Poin</th><th>Waktu</th></tr>
+</thead>
+<tbody id="historyBody"></tbody>
+</table>
+</div>
+<script>
+  const soal = [{"soal": "Apa arti dari Hari Kiamat dalam Islam?", "pilihan": ["Hari pernikahan", "Hari kehancuran alam semesta dan kebangkitan manusia", "Hari libur nasional", "Hari ulang tahun Nabi Muhammad SAW"], "jawaban": 1}, {"soal": "Salah satu tanda besar datangnya hari kiamat adalah?", "pilihan": ["Matahari terbit dari barat", "Hujan turun deras", "Bulan purnama muncul", "Hari Jumat tiba"], "jawaban": 0}, {"soal": "Soal contoh nomor 3 - manakah yang benar?", "pilihan": ["Pilihan A3", "Pilihan B3", "Pilihan C3", "Pilihan D3"], "jawaban": 3}, {"soal": "Soal contoh nomor 4 - manakah yang benar?", "pilihan": ["Pilihan A4", "Pilihan B4", "Pilihan C4", "Pilihan D4"], "jawaban": 0}, {"soal": "Soal contoh nomor 5 - manakah yang benar?", "pilihan": ["Pilihan A5", "Pilihan B5", "Pilihan C5", "Pilihan D5"], "jawaban": 1}, {"soal": "Soal contoh nomor 6 - manakah yang benar?", "pilihan": ["Pilihan A6", "Pilihan B6", "Pilihan C6", "Pilihan D6"], "jawaban": 2}, {"soal": "Soal contoh nomor 7 - manakah yang benar?", "pilihan": ["Pilihan A7", "Pilihan B7", "Pilihan C7", "Pilihan D7"], "jawaban": 3}, {"soal": "Soal contoh nomor 8 - manakah yang benar?", "pilihan": ["Pilihan A8", "Pilihan B8", "Pilihan C8", "Pilihan D8"], "jawaban": 0}, {"soal": "Soal contoh nomor 9 - manakah yang benar?", "pilihan": ["Pilihan A9", "Pilihan B9", "Pilihan C9", "Pilihan D9"], "jawaban": 1}, {"soal": "Soal contoh nomor 10 - manakah yang benar?", "pilihan": ["Pilihan A10", "Pilihan B10", "Pilihan C10", "Pilihan D10"], "jawaban": 2}, {"soal": "Soal contoh nomor 11 - manakah yang benar?", "pilihan": ["Pilihan A11", "Pilihan B11", "Pilihan C11", "Pilihan D11"], "jawaban": 3}, {"soal": "Soal contoh nomor 12 - manakah yang benar?", "pilihan": ["Pilihan A12", "Pilihan B12", "Pilihan C12", "Pilihan D12"], "jawaban": 0}, {"soal": "Soal contoh nomor 13 - manakah yang benar?", "pilihan": ["Pilihan A13", "Pilihan B13", "Pilihan C13", "Pilihan D13"], "jawaban": 1}, {"soal": "Soal contoh nomor 14 - manakah yang benar?", "pilihan": ["Pilihan A14", "Pilihan B14", "Pilihan C14", "Pilihan D14"], "jawaban": 2}, {"soal": "Soal contoh nomor 15 - manakah yang benar?", "pilihan": ["Pilihan A15", "Pilihan B15", "Pilihan C15", "Pilihan D15"], "jawaban": 3}, {"soal": "Soal contoh nomor 16 - manakah yang benar?", "pilihan": ["Pilihan A16", "Pilihan B16", "Pilihan C16", "Pilihan D16"], "jawaban": 0}, {"soal": "Soal contoh nomor 17 - manakah yang benar?", "pilihan": ["Pilihan A17", "Pilihan B17", "Pilihan C17", "Pilihan D17"], "jawaban": 1}, {"soal": "Soal contoh nomor 18 - manakah yang benar?", "pilihan": ["Pilihan A18", "Pilihan B18", "Pilihan C18", "Pilihan D18"], "jawaban": 2}, {"soal": "Soal contoh nomor 19 - manakah yang benar?", "pilihan": ["Pilihan A19", "Pilihan B19", "Pilihan C19", "Pilihan D19"], "jawaban": 3}, {"soal": "Soal contoh nomor 20 - manakah yang benar?", "pilihan": ["Pilihan A20", "Pilihan B20", "Pilihan C20", "Pilihan D20"], "jawaban": 0}];
+  let index = 0;
+  let skor = 0;
+  let nama = "";
+  let timer;
+  let timeLeft = 20;
+
+  function mulaiKuis() {
+    nama = document.getElementById('nama').value.trim();
+    if (!nama) return alert("Masukkan nama terlebih dahulu.");
+    document.getElementById('startScreen').classList.add('hidden');
+    document.getElementById('quizScreen').classList.remove('hidden');
+    document.getElementById('welcome').textContent = "SELAMAT DATANG " + nama.toUpperCase() + ", SELAMAT MENGERJAKAN PILIHAN GANDA DI BAWAH";
+    tampilSoal();
+    mulaiTimer();
+  }
+
+  function tampilSoal() {
+    const s = soal[index];
+    let html = `<div class='question-title'>${index+1}. ${s.soal}</div><br>`;
+    s.pilihan.forEach((pil, i) => {
+      html += `<label><input type="radio" name="pilihan" value="${i}"> ${String.fromCharCode(65+i)}. ${pil}</label><br>`;
+    });
+    document.getElementById('questionContainer').innerHTML = html;
+  }
+
+  function mulaiTimer() {
+    timeLeft = 20;
+    document.getElementById("timer").textContent = timeLeft;
+    timer = setInterval(() => {
+      timeLeft--;
+      document.getElementById("timer").textContent = timeLeft;
+      if (timeLeft <= 0) {
+        jawab();
+      }
+    }, 1000);
+  }
+
+  function jawab() {
+    clearInterval(timer);
+    const pilihan = document.querySelector('input[name="pilihan"]:checked');
+    if (pilihan && parseInt(pilihan.value) === soal[index].jawaban) {
+      skor++;
+    }
+    index++;
+    if (index < soal.length) {
+      tampilSoal();
+      mulaiTimer();
+    } else {
+      selesai();
+    }
+  }
+
+  function selesai() {
+    document.getElementById('quizScreen').classList.add('hidden');
+    document.getElementById('resultScreen').classList.remove('hidden');
+    document.getElementById('score').textContent = `Skor Anda, ${nama}: ${skor} dari ${soal.length}`;
+
+    let history = JSON.parse(localStorage.getItem("kuisHistory") || "[]");
+    history.push({ nama: nama, skor: skor, waktu: new Date().toLocaleString() });
+    localStorage.setItem("kuisHistory", JSON.stringify(history));
+    tampilHistory();
+  }
+
+  function tampilHistory() {
+    const history = JSON.parse(localStorage.getItem("kuisHistory") || "[]");
+    const tbody = document.getElementById("historyBody");
+    tbody.innerHTML = "";
+    history.reverse().forEach(row => {
+      tbody.innerHTML += `<tr><td>${row.nama}</td><td>${row.skor}</td><td>${row.waktu}</td></tr>`;
+    });
+  }
+</script>
+<div id="history" style="margin-top: 40px; padding: 20px; background: #fff;">
+<h2>Histori Poin Siswa</h2>
+<ul id="historyList"></ul>
+</div>
+<script>
+  function updateHistory(nama, skor) {
+    const waktu = new Date().toLocaleString();
+    const hasil = { nama, skor, waktu };
+
+    let histori = JSON.parse(localStorage.getItem("historiKuis")) || [];
+    histori.push(hasil);
+    localStorage.setItem("historiKuis", JSON.stringify(histori));
+    tampilkanHistori();
+  }
+
+  function tampilkanHistori() {
+    const histori = JSON.parse(localStorage.getItem("historiKuis")) || [];
+    const list = document.getElementById("historyList");
+    list.innerHTML = '';
+    histori.forEach(item => {
+      const li = document.createElement("li");
+      li.innerText = `👤 ${item.nama} – 🧮 Skor: ${item.skor} – 🕒 ${item.waktu}`;
+      list.appendChild(li);
+    });
+  }
+
+  window.onload = function() {
+    tampilkanHistori();
+  };
+</script>
+</body>
+</html>
